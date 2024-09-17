@@ -10,16 +10,12 @@ interface Task {
 }
 
 const App: React.FC = () => {
-  // Estado para armazenar as tarefas
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<string>('');
   const [currentDateTime, setCurrentDateTime] = useState<string>('');
-
-  // Estado para armazenar a tarefa que está sendo editada
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [editedTaskText, setEditedTaskText] = useState<string>('');
 
-  // Função para obter a data e hora no formato desejado
   const getCurrentDateTime = (includeSeconds: boolean = false) => {
     const today = new Date();
     const options: Intl.DateTimeFormatOptions = {
@@ -33,33 +29,34 @@ const App: React.FC = () => {
     return `${date} ${time}`;
   };
 
-  // Atualizar a hora atual periodicamente
   useEffect(() => {
     const updateCurrentDateTime = () => {
-      setCurrentDateTime(getCurrentDateTime(true)); // Inclui os segundos
+      setCurrentDateTime(getCurrentDateTime(true));
     };
 
-    updateCurrentDateTime(); // Atualiza na primeira renderização
-    const intervalId = setInterval(updateCurrentDateTime, 1000); // Atualiza a cada segundo
+    updateCurrentDateTime();
+    const intervalId = setInterval(updateCurrentDateTime, 1000);
 
-    return () => clearInterval(intervalId); // Limpa o intervalo quando o componente desmonta
+    return () => clearInterval(intervalId);
   }, []);
 
-  // Adicionar nova tarefa
   const addTask = () => {
     if (newTask.trim()) {
       const newTaskObject: Task = {
         id: Date.now(),
         text: newTask,
         completed: false,
-        date: getCurrentDateTime(false), // Não inclui os segundos
+        date: getCurrentDateTime(false),
       };
       setTasks([...tasks, newTaskObject]);
-      setNewTask(''); // Limpa o campo
+      setNewTask('');
     }
   };
 
-  // Alternar o status de conclusão da tarefa
+  const resetTasks = () => {
+    setTasks([]);
+  };
+
   const toggleTaskCompletion = (id: number) => {
     setTasks(
       tasks.map(task =>
@@ -68,32 +65,30 @@ const App: React.FC = () => {
     );
   };
 
-  // Remover uma tarefa
   const removeTask = (id: number) => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
-  // Habilitar modo de edição
   const startEditingTask = (id: number, currentText: string) => {
     setEditingTaskId(id);
     setEditedTaskText(currentText);
   };
 
-  // Salvar a tarefa editada
   const saveEditedTask = (id: number) => {
     setTasks(
       tasks.map(task =>
         task.id === id ? { ...task, text: editedTaskText } : task
       )
     );
-    setEditingTaskId(null); // Desabilita o modo de edição
+    setEditingTaskId(null);
   };
 
   return (
     <div>
       <h1>Lista de Tarefas</h1>
-      <p>{currentDateTime}</p> {/* Exibe a hora atual com segundos */}
+      <p>{currentDateTime}</p>
       <h2>(To-do List)</h2>
+
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <input
           type="text"
@@ -101,12 +96,41 @@ const App: React.FC = () => {
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Adicionar nova tarefa"
         />
-        <button onClick={addTask}>Adicionar</button>
+        <button
+          onClick={addTask}
+          style={{
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            padding: '10px',
+            marginLeft: '10px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            width: '150px',
+          }}
+        >
+          Adicionar
+        </button>
+        <button
+          onClick={resetTasks}
+          style={{
+            backgroundColor: '#ff6347',
+            color: 'white',
+            padding: '10px',
+            marginLeft: '10px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            width: '150px',
+          }}
+        >
+          Resetar Lista
+        </button>
       </div>
+
       <ul>
         {tasks.map(task => (
           <li key={task.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            {/* Se a tarefa está em modo de edição, exibe o input, caso contrário, exibe o texto */}
             {editingTaskId === task.id ? (
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <input
@@ -114,7 +138,21 @@ const App: React.FC = () => {
                   value={editedTaskText}
                   onChange={(e) => setEditedTaskText(e.target.value)}
                 />
-                <button onClick={() => saveEditedTask(task.id)}>Salvar</button>
+                {/* Botão Salvar com fundo verde */}
+                <button
+                  onClick={() => saveEditedTask(task.id)}
+                  style={{
+                    backgroundColor: '#4CAF50', // Mesma cor do botão Adicionar
+                    color: 'white',
+                    padding: '10px',
+                    marginLeft: '10px',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Salvar
+                </button>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -129,23 +167,21 @@ const App: React.FC = () => {
                 >
                   {task.text}
                 </span>
-                {/* Exibir a data e hora de criação da tarefa */}
                 <small style={{ marginLeft: '10px', color: '#888' }}>
                   {task.date}
                 </small>
               </div>
             )}
 
-            {/* Exibir "completa" se a tarefa estiver concluída */}
             {task.completed && (
-              <span 
-                style={{ 
-                  marginLeft: '10px', 
+              <span
+                style={{
+                  marginLeft: '10px',
                   backgroundColor: '#28a745',
                   color: 'white',
                   padding: '5px 10px',
                   borderRadius: '5px',
-                  fontSize: '14px'
+                  fontSize: '14px',
                 }}
               >
                 Completa
