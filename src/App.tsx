@@ -10,12 +10,20 @@ interface Task {
   completionDate?: string; // Adiciona a data de conclusão opcional
 }
 
+interface TaskHistory {
+  date: string;
+  completedTasks: number;
+  totalTasks: number;
+  completionPercentage: number;
+}
+
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<string>('');
   const [currentDateTime, setCurrentDateTime] = useState<string>('');
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [editedTaskText, setEditedTaskText] = useState<string>('');
+  const [history, setHistory] = useState<TaskHistory[]>([]);
 
   // Função para obter a data e hora atual
   const getCurrentDateTime = (includeSeconds: boolean = false) => {
@@ -42,6 +50,24 @@ const App: React.FC = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  // Carregar tarefas do localStorage
+  useEffect(() => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+
+    const storedHistory = localStorage.getItem('taskHistory');
+    if (storedHistory) {
+      setHistory(JSON.parse(storedHistory));
+    }
+  }, []);
+
+  // Salvar tarefas no localStorage quando houver alterações
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   // Adiciona uma nova tarefa
   const addTask = () => {
@@ -104,6 +130,20 @@ const App: React.FC = () => {
   const incompleteTasks = totalTasks - completedTasks;
   const completionPercentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 
+  // Salvar progresso diário no localStorage
+  const saveDailyProgress = () => {
+    const dateKey = new Date().toLocaleDateString('pt-BR');
+    const progress = {
+      date: dateKey,
+      completedTasks: completedTasks,
+      totalTasks: totalTasks,
+      completionPercentage: completionPercentage
+    };
+    const updatedHistory = [...history, progress];
+    setHistory(updatedHistory);
+    localStorage.setItem('taskHistory', JSON.stringify(updatedHistory));
+  };
+
   return (
     <div>
       <h1>Lista de Tarefas</h1>
@@ -155,6 +195,22 @@ const App: React.FC = () => {
           Resetar Lista
         </button>
       </div>
+
+      <button
+        onClick={saveDailyProgress}
+        style={{
+          backgroundColor: '#007bff',
+          color: 'white',
+          padding: '10px',
+          marginBottom: '20px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          width: '200px',
+        }}
+      >
+        Salvar Progresso Diário
+      </button>
 
       <ul>
         {tasks.map(task => (
@@ -211,6 +267,15 @@ const App: React.FC = () => {
                 <button onClick={() => startEditingTask(task.id, task.text)}>Editar</button>
               )}
             </div>
+          </li>
+        ))}
+      </ul>
+
+      <h3>Histórico Diário</h3>
+      <ul>
+        {history.map((entry, index) => (
+          <li key={index}>
+            Data: {entry.date}, Tarefas Concluídas: {entry.completedTasks}, Total de Tarefas: {entry.totalTasks}, Porcentagem: {entry.completionPercentage.toFixed(2)}%
           </li>
         ))}
       </ul>
