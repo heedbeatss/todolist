@@ -7,6 +7,7 @@ interface Task {
   text: string;
   completed: boolean;
   date: string;
+  completionDate?: string; // Adiciona a data de conclusão opcional
 }
 
 const App: React.FC = () => {
@@ -16,6 +17,7 @@ const App: React.FC = () => {
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [editedTaskText, setEditedTaskText] = useState<string>('');
 
+  // Função para obter a data e hora atual
   const getCurrentDateTime = (includeSeconds: boolean = false) => {
     const today = new Date();
     const options: Intl.DateTimeFormatOptions = {
@@ -29,6 +31,7 @@ const App: React.FC = () => {
     return `${date} ${time}`;
   };
 
+  // Atualiza a data e hora a cada segundo
   useEffect(() => {
     const updateCurrentDateTime = () => {
       setCurrentDateTime(getCurrentDateTime(true));
@@ -40,6 +43,7 @@ const App: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  // Adiciona uma nova tarefa
   const addTask = () => {
     if (newTask.trim()) {
       const newTaskObject: Task = {
@@ -53,27 +57,38 @@ const App: React.FC = () => {
     }
   };
 
+  // Reseta todas as tarefas
   const resetTasks = () => {
     setTasks([]);
   };
 
+  // Alterna o estado de conclusão de uma tarefa
   const toggleTaskCompletion = (id: number) => {
     setTasks(
       tasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+        task.id === id
+          ? {
+              ...task,
+              completed: !task.completed,
+              completionDate: !task.completed ? getCurrentDateTime(false) : undefined,
+            }
+          : task
       )
     );
   };
 
+  // Remove uma tarefa
   const removeTask = (id: number) => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  // Inicia a edição de uma tarefa
   const startEditingTask = (id: number, currentText: string) => {
     setEditingTaskId(id);
     setEditedTaskText(currentText);
   };
 
+  // Salva uma tarefa editada
   const saveEditedTask = (id: number) => {
     setTasks(
       tasks.map(task =>
@@ -83,11 +98,24 @@ const App: React.FC = () => {
     setEditingTaskId(null);
   };
 
+  // Cálculos para o marcador
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(task => task.completed).length;
+  const incompleteTasks = totalTasks - completedTasks;
+  const completionPercentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+
   return (
     <div>
       <h1>Lista de Tarefas</h1>
       <p>{currentDateTime}</p>
       <h2>(To-do List)</h2>
+
+      {/* Marcador com estatísticas */}
+      <div style={{ marginBottom: '20px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '8px' }}>
+        <p>Total de tarefas: {totalTasks}</p>
+        <p>Tarefas concluídas: {completedTasks} ({completionPercentage.toFixed(2)}%)</p>
+        <p>Tarefas não concluídas: {incompleteTasks}</p>
+      </div>
 
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <input
@@ -138,11 +166,10 @@ const App: React.FC = () => {
                   value={editedTaskText}
                   onChange={(e) => setEditedTaskText(e.target.value)}
                 />
-                {/* Botão Salvar com fundo verde */}
                 <button
                   onClick={() => saveEditedTask(task.id)}
                   style={{
-                    backgroundColor: '#4CAF50', // Mesma cor do botão Adicionar
+                    backgroundColor: '#4CAF50',
                     color: 'white',
                     padding: '10px',
                     marginLeft: '10px',
@@ -170,22 +197,12 @@ const App: React.FC = () => {
                 <small style={{ marginLeft: '10px', color: '#888' }}>
                   {task.date}
                 </small>
+                {task.completed && task.completionDate && (
+                  <small style={{ marginLeft: '10px', color: '#28a745' }}>
+                    (Concluída em: {task.completionDate})
+                  </small>
+                )}
               </div>
-            )}
-
-            {task.completed && (
-              <span
-                style={{
-                  marginLeft: '10px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  padding: '5px 10px',
-                  borderRadius: '5px',
-                  fontSize: '14px',
-                }}
-              >
-                Completa
-              </span>
             )}
 
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
