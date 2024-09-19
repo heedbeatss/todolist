@@ -4,7 +4,7 @@
     background-color: black;
     color: #333;
     margin: 0;
-    padding: 0;
+    padding: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -36,7 +36,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 1000px;
+    max-width: 1800px;
     /* max-height: 80vh; 
     overflow: hidden; */
     box-sizing: border-box; /* Garante que o padding não afete o tamanho total do card */
@@ -73,84 +73,123 @@
   }
 
   /* Estilo da lista de tarefas */
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 20px;
-    max-height: 50vh; /* Definir a altura máxima da lista */
-    overflow-y: auto; /* Habilitar a rolagem vertical */
-  }
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+  max-height: 65vh; /* Definir a altura máxima da lista */
+  overflow-y: auto; /* Habilitar a rolagem vertical */
+}
 
-  li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+li {
+  padding: 8px; /* Reduzir o padding para compactar os itens */
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: row; /* Ajustar o layout para coluna */
+  align-items: flex-start; /* Alinhar à esquerda */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative; /* Garantir que a posição relativa funcione */
+}
 
-  li:last-child {
-    border-bottom: none;
-  }
+li:last-child {
+  border-bottom: none;
+}
 
-  /* Estilo do texto da tarefa */
-  li span {
-    cursor: pointer;
-    font-size: 1rem;
-    flex-grow: 1;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-  }
+/* Estilo do texto da tarefa */
+li span {
+  cursor: pointer;
+  font-size: 1rem; /* Reduzir o tamanho da fonte */
+  padding: 2px; /* Ajustar o padding */
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
 
-  li span:hover {
-    color: #007bff;
-  }
+li span:hover {
+  color: #007bff;
+}
 
-  /* Estilo da data e hora */
-  li .task-date {
-    font-size: 0.9rem;
-    color: #888;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column;
-  }
+/* Estilo para tarefa concluída */
+li span.completed {
+  text-decoration: line-through;
+  color: green;
+}
 
+/* Estilo da data e hora */
+li .task-date {
+  font-size: 0.8rem; /* Reduzir o tamanho da fonte */
+  color: #888;
+  margin-top: 2px; /* Reduzir o espaçamento entre o nome da tarefa e a data */
+}
 
-  /* Estilo para tarefa concluída */
-  li span.completed {
-    text-decoration: line-through;
-    text-decoration-color: green;
-    color: green;
-  }
+/* Ajustes para os botões dentro da lista */
+li button {
+  background-color: #dc3545;
+  border: none;
+  padding: 4px 8px; /* Reduzir o padding para compactar o botão */
+  color: white;
+  border-radius: 4px;
+  font-size: 0.9rem; /* Reduzir o tamanho da fonte */
+} 
 
-  /* Ajustes para os botões dentro da lista */
-  li button {
-    background-color: #dc3545;
-    border: none;
-    padding: 5px 10px;
-    color: white;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
+li button:first-child {
+  margin-left: 100px; /* Ajustar o espaçamento */
+}
 
-  li button:first-child {
-    margin-left: 10rem;
-  }
+li button:hover {
+  background-color: #c82333;
+}
 
-  li button:hover {
-    background-color: #c82333;
-  }
+/* Ajuste de layout dos botões */
+li div {
+  display: flex;
+  gap: 0px; /* Reduzir o gap */
+  align-items: center; /* Ajustar o alinhamento dos itens */
+  margin-left: 0.4rem; /* Ajustar a margem esquerda */
+}
 
-  /* Ajuste de layout dos botões */
-  li div {
-    display: flex;
-    gap: 10px;
-    align-items: stretch;
-    margin-left: 0.8rem;
-  }
+/* Estilo dos checkboxes */
+.checkbox {
+  font-size: small;
+  gap: 10px;
+}
+
+.checkbox-group {
+  display: flex;
+  margin-left: 0px; 
+}
+
+.checkbox-group label {
+  
+}
+
+.checkbox-group input {
+  
+}
+
+/* Histórico/relatório de tarefas */
+.historico-div {
+  max-height: 65vh; /* Definir a altura máxima da lista */
+  overflow-y: auto; /* Habilitar a rolagem vertical */
+  font-size: small;
+}
+
+.historico {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.historico-bt{
+  padding: 5px;
+  margin-left: 90px;
+  font-size: small;
+}
+
+.historico-pct {
+  display: flex;
+  flex-direction: row;
+}
+

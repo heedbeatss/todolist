@@ -8,6 +8,7 @@ interface Task {
   completed: boolean;
   date: string;
   completionDate?: string; // Adiciona a data de conclusão opcional
+  types: { [key: string]: boolean }; // Adiciona os tipos de tarefa
 }
 
 interface TaskHistory {
@@ -15,6 +16,7 @@ interface TaskHistory {
   completedTasks: number;
   totalTasks: number;
   completionPercentage: number;
+  typePercentages: { [key: string]: number }; // Percentuais por tipo
 }
 
 const App: React.FC = () => {
@@ -24,6 +26,11 @@ const App: React.FC = () => {
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [editedTaskText, setEditedTaskText] = useState<string>('');
   const [history, setHistory] = useState<TaskHistory[]>([]);
+  const [taskTypes, setTaskTypes] = useState<{ [key: string]: boolean }>({
+    responsabilidade: false,
+    lazer: false,
+    criacao: false,
+  });
 
   // Função para obter a data e hora atual
   const getCurrentDateTime = (includeSeconds: boolean = false) => {
@@ -77,9 +84,11 @@ const App: React.FC = () => {
         text: newTask,
         completed: false,
         date: getCurrentDateTime(false),
+        types: taskTypes, // Adiciona os tipos selecionados
       };
       setTasks([...tasks, newTaskObject]);
       setNewTask('');
+      setTaskTypes({ responsabilidade: false, lazer: false, criacao: false });
     }
   };
 
@@ -130,14 +139,46 @@ const App: React.FC = () => {
   const incompleteTasks = totalTasks - completedTasks;
   const completionPercentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 
+  // Calcula percentuais por tipo
+  const calculateTypePercentages = () => {
+    const typeCounts: { [key: string]: number } = {
+      responsabilidade: 0,
+      lazer: 0,
+      criacao: 0,
+    };
+
+    tasks.forEach(task => {
+      if (task.completed) {
+        Object.keys(task.types).forEach(type => {
+          if (task.types[type]) {
+            typeCounts[type]++;
+          }
+        });
+      }
+    });
+
+    const totalCompletedTasks = completedTasks;
+    const typePercentages: { [key: string]: number } = {};
+    
+    Object.keys(typeCounts).forEach(type => {
+      typePercentages[type] = totalCompletedTasks === 0
+        ? 0
+        : (typeCounts[type] / totalCompletedTasks) * 100;
+    });
+
+    return typePercentages;
+  };
+
   // Salvar progresso diário no localStorage
   const saveDailyProgress = () => {
     const dateKey = new Date().toLocaleDateString('pt-BR');
+    const typePercentages = calculateTypePercentages();
     const progress = {
       date: dateKey,
       completedTasks: completedTasks,
       totalTasks: totalTasks,
-      completionPercentage: completionPercentage
+      completionPercentage: completionPercentage,
+      typePercentages: typePercentages
     };
     const updatedHistory = [...history.filter(h => h.date !== dateKey), progress];
     setHistory(updatedHistory);
@@ -280,16 +321,55 @@ const App: React.FC = () => {
                 <button onClick={() => startEditingTask(task.id, task.text)}>Editar</button>
               )}
             </div>
+            {/* Checkboxes para tipos de tarefa */}
+            <div className='checkbox' style={{ marginLeft: '10px' }}>
+              <label>
+                <input className='checkbox-group'
+                  type="checkbox"
+                  checked={task.types.responsabilidade}
+                  onChange={() => setTasks(tasks.map(t =>
+                    t.id === task.id ? { ...t, types: { ...t.types, responsabilidade: !t.types.responsabilidade } } : t
+                  ))}
+                />
+                Responsabilidade
+              </label>
+              <label>
+                <input className='checkbox-group'
+                  type="checkbox" 
+                  checked={task.types.lazer}
+                  onChange={() => setTasks(tasks.map(t =>
+                    t.id === task.id ? { ...t, types: { ...t.types, lazer: !t.types.lazer } } : t
+                  ))}
+                />
+                Lazer ou Descanso
+              </label>
+              <label>
+                <input className='checkbox-group'
+                  type="checkbox"
+                  checked={task.types.criacao}
+                  onChange={() => setTasks(tasks.map(t =>
+                    t.id === task.id ? { ...t, types: { ...t.types, criacao: !t.types.criacao } } : t
+                  ))}
+                />
+                Criação/Produção
+              </label>
+            </div>
           </li>
         ))}
       </ul>
 
+       <div  className='historico-div'>
       <h3>Histórico Diário</h3>
       <ul>
         {history.map((entry, index) => (
-          <li key={index}>
+          <li className='historico' key={index}>
             Data: {entry.date}, Tarefas Concluídas: {entry.completedTasks}, Total de Tarefas: {entry.totalTasks}, Porcentagem: {entry.completionPercentage.toFixed(2)}%
-            <button onClick={() => removeHistoryEntry(entry.date)} style={{ marginLeft: '10px', color: 'white' }}>Excluir</button>
+            {Object.keys(entry.typePercentages || {}).map(type => (
+              <p key={type}>
+                {type.charAt(0).toUpperCase() + type.slice(1)}: {entry.typePercentages[type].toFixed(2)}%
+              </p>
+            ))}
+            <button className='historico-bt' onClick={() => removeHistoryEntry(entry.date)} >Excluir</button>
           </li>
         ))}
       </ul>
@@ -299,17 +379,19 @@ const App: React.FC = () => {
         style={{
           backgroundColor: '#dc3545',
           color: 'white',
-          padding: '10px',
-          marginTop: '20px',
+          fontSize: 'small',
+          padding: '5px',
+          marginTop: '5px',
           border: 'none',
           borderRadius: '5px',
           cursor: 'pointer',
-          width: '200px',
+          width: '170px',
         }}
       >
         Resetar Todo o Histórico
       </button>
     </div>
+  </div> 
   );
 };
 
