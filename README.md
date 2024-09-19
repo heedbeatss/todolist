@@ -1,6 +1,7 @@
 # To-do List
 
-Permite adicionar tarefas a uma lista de tarefas, especificar qual a categoria dessa tarefa entre três (Responsabilidade, Lazer e Criação), é possível acompanhar durante o dia o progresso de suas tarefas, quantas foram concluídas ou não e a porcentagem dos dados, você pode salvar o progresso diário no histórico para poder acompanhar o andamento de suas tarefas no dia a dia.
+Permite adicionar tarefas a uma lista de tarefas, especificar qual a categoria dessa tarefa entre três (responsabilidade, lazer e criação).
+É possível acompanhar durante o dia o progresso de suas tarefas, quantas foram concluídas ou não e a porcentagem dos dados, você pode salvar o progresso diário no histórico para poder acompanhar o andamento de suas tarefas no ao decorrer dos dias.
 
 
 # Como fazer
