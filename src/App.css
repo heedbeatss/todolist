@@ -32,11 +32,11 @@
 
   div {
     background-color: white;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 1800px;
+    max-width: 3000px;
     /* max-height: 80vh; 
     overflow: hidden; */
     box-sizing: border-box; /* Garante que o padding não afete o tamanho total do card */
@@ -183,6 +183,10 @@ li div {
   display: flex;
   flex-direction: column;
   justify-content: start;
+}
+
+.historico p {
+  gap: 0px;
 }
 
 .historico-bt{

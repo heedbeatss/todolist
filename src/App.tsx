@@ -169,6 +169,11 @@ const App: React.FC = () => {
     return typePercentages;
   };
 
+  const typePercentages = calculateTypePercentages();
+
+
+
+
   // Salvar progresso diário no localStorage
   const saveDailyProgress = () => {
     const dateKey = new Date().toLocaleDateString('pt-BR');
@@ -204,12 +209,22 @@ const App: React.FC = () => {
       <p>{currentDateTime}</p>
       <h2>(To-do List)</h2>
 
+
+    
       {/* Marcador com estatísticas */}
       <div style={{ marginBottom: '20px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '8px' }}>
         <p>Total de tarefas: {totalTasks}</p>
         <p>Tarefas concluídas: {completedTasks} ({completionPercentage.toFixed(2)}%)</p>
         <p>Tarefas não concluídas: {incompleteTasks}</p>
+      {/* Exibe as porcentagens de tipo no topo da aplicação */}
+      {Object.keys(typePercentages).map(type => (
+        <p key={type}>
+          {type.charAt(0).toUpperCase() + type.slice(1)}: {typePercentages[type].toFixed(2)}%
+        </p>
+      ))}    
       </div>
+
+    
 
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <input
@@ -218,6 +233,7 @@ const App: React.FC = () => {
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Adicionar nova tarefa"
         />
+        
         <button
           onClick={addTask}
           style={{
@@ -249,6 +265,8 @@ const App: React.FC = () => {
           Resetar Lista
         </button>
       </div>
+
+      
 
       <button
         onClick={saveDailyProgress}
