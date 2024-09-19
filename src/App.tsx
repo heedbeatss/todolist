@@ -139,9 +139,22 @@ const App: React.FC = () => {
       totalTasks: totalTasks,
       completionPercentage: completionPercentage
     };
-    const updatedHistory = [...history, progress];
+    const updatedHistory = [...history.filter(h => h.date !== dateKey), progress];
     setHistory(updatedHistory);
     localStorage.setItem('taskHistory', JSON.stringify(updatedHistory));
+  };
+
+  // Função para excluir um único histórico
+  const removeHistoryEntry = (date: string) => {
+    const updatedHistory = history.filter(entry => entry.date !== date);
+    setHistory(updatedHistory);
+    localStorage.setItem('taskHistory', JSON.stringify(updatedHistory));
+  };
+
+  // Função para resetar todo o histórico
+  const resetHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('taskHistory');
   };
 
   return (
@@ -276,9 +289,26 @@ const App: React.FC = () => {
         {history.map((entry, index) => (
           <li key={index}>
             Data: {entry.date}, Tarefas Concluídas: {entry.completedTasks}, Total de Tarefas: {entry.totalTasks}, Porcentagem: {entry.completionPercentage.toFixed(2)}%
+            <button onClick={() => removeHistoryEntry(entry.date)} style={{ marginLeft: '10px', color: 'white' }}>Excluir</button>
           </li>
         ))}
       </ul>
+
+      <button
+        onClick={resetHistory}
+        style={{
+          backgroundColor: '#dc3545',
+          color: 'white',
+          padding: '10px',
+          marginTop: '20px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          width: '200px',
+        }}
+      >
+        Resetar Todo o Histórico
+      </button>
     </div>
   );
 };
