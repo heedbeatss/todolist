@@ -72,6 +72,12 @@
     background-color: #218838;
   }
 
+  .estatisticas-porcentagem p {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+  }
+
   /* Estilo da lista de tarefas */
 ul {
   list-style-type: none;
