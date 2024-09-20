@@ -75,6 +75,7 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
+  
 
   // Adiciona uma nova tarefa
   const addTask = () => {
@@ -214,6 +215,10 @@ const calculateTypePercentages = () => {
   const typePercentages = calculateTypePercentages();
 
 
+  // Calcula a porcentagem de tarefas não concluídas
+const incompleteTasksPercentage = totalTasks === 0 ? 0 : (incompleteTasks / totalTasks) * 100;
+
+
   // Salvar progresso diário no localStorage
   const saveDailyProgress = () => {
     const dateKey = new Date().toLocaleDateString('pt-BR');
@@ -254,9 +259,9 @@ const calculateTypePercentages = () => {
   {/* Exemplo de como adicionar as porcentagens e número de tarefas concluídas no topo */}
   <div style={{ marginBottom: '20px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '8px' }}>
     <p>Total de tarefas: {totalTasks === 0 ? 'Nenhuma tarefa' : totalTasks}</p>
-    <p>Tarefas não concluídas: {incompleteTasks === 0 ? 'Nenhuma tarefa' : incompleteTasks}</p>
-    <p>Tarefas concluídas: {completedTasks === 0 ? 'Nenhuma tarefa' : `${completedTasks} (${completionPercentage.toFixed(2)}%)`}</p>
-        
+    <p>Tarefas não concluídas: {incompleteTasks === 0 ? 'Nenhuma tarefa' : `${incompleteTasks} (${incompleteTasksPercentage.toFixed(2)}%)`}</p>
+    <p>Tarefas concluídas: {completedTasks === 0 ? 'Nenhuma tarefa (0%)' : `${completedTasks} (${completionPercentage.toFixed(2)}%)`}</p>
+    
     {Object.keys(typePercentages).map(type => {
       const label = typeLabels[type] || type;
       const color = type === 'lazer' ? 'orange' : type === 'responsabilidade' ? 'blue' : 'purple';
@@ -270,6 +275,7 @@ const calculateTypePercentages = () => {
       );
     })}
   </div>
+
 
   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
     <input
@@ -311,8 +317,121 @@ const calculateTypePercentages = () => {
     </button>
   </div>
 
-      
-  <button
+
+  <ul>
+  {tasks.map(task => {
+  // Verificar se pelo menos um tipo de tarefa (checkbox) foi marcado
+  const hasTypeSelected = Object.values(task.types).some(typeSelected => typeSelected);
+  return (
+  <li key={task.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+  {editingTaskId === task.id ? (
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <input
+      type="text"
+      value={editedTaskText}
+      onChange={(e) => setEditedTaskText(e.target.value)}
+    />
+    <button
+    onClick={() => saveEditedTask(task.id)}
+    style={{
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      padding: '10px',
+      marginLeft: '10px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+    }}
+  >
+    Salvar
+  </button>
+  </div>) : (
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+  <span
+    style={{
+      textDecoration: task.completed ? 'line-through' : 'none',
+      color: task.completed ? '#FF6347' : '#000',
+      cursor: 'pointer',
+      flexGrow: 1,
+    }}
+  >
+    {task.text}
+  </span>
+  <small style={{ marginLeft: '10px', color: '#888' }}>
+    {task.date}
+  </small>
+  {task.completed && task.completionDate && (
+    <small style={{ marginLeft: '10px', color: '#28a745' }}>
+      (Concluída em: {task.completionDate})
+    </small>
+  )}
+ </div>)}
+ <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+ <button onClick={() => removeTask(task.id)}>Remover</button>
+ {!task.completed && editingTaskId !== task.id && (
+  <>
+    <button onClick={() => startEditingTask(task.id, task.text)}>Editar</button>
+    {/* Adicionando o botão "Concluir Tarefa" somente se um checkbox estiver marcado */}
+    {hasTypeSelected && (
+      <button 
+        onClick={() => toggleTaskCompletion(task.id)} 
+        style={{
+          backgroundColor: '#28a745',
+          color: 'white',
+          padding: '5px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        Concluir Tarefa
+      </button>
+    )}
+  </>
+)}</div>
+
+{/* Checkboxes para tipos de tarefa */}
+<div className='checkbox' style={{ marginLeft: '10px' }}>
+  <label>
+    <input
+      className='checkbox-group'
+      type="checkbox"
+      checked={task.types.responsabilidade}
+      onChange={() => setTasks(tasks.map(t =>
+        t.id === task.id ? { ...t, types: { ...t.types, responsabilidade: !t.types.responsabilidade } } : t
+      ))}
+    />
+    Responsabilidade
+  </label>
+  <label>
+    <input
+      className='checkbox-group'
+      type="checkbox" 
+      checked={task.types.lazer}
+      onChange={() => setTasks(tasks.map(t =>
+        t.id === task.id ? { ...t, types: { ...t.types, lazer: !t.types.lazer } } : t
+      ))}
+    />
+    Lazer ou Descanso
+  </label>
+  <label>
+    <input
+      className='checkbox-group'
+      type="checkbox"
+      checked={task.types.criacao}
+      onChange={() => setTasks(tasks.map(t =>
+        t.id === task.id ? { ...t, types: { ...t.types, criacao: !t.types.criacao } } : t
+      ))}
+    />
+    Criação/Produção
+  </label>
+ </div></li>
+  );
+})}
+</ul>  
+
+
+<button
     onClick={saveDailyProgress}
     style={{
       backgroundColor: '#007bff',
@@ -327,99 +446,6 @@ const calculateTypePercentages = () => {
   >
     Salvar Progresso Diário
   </button>
-
-  <ul>
-  {tasks.map(task => (
-  <li key={task.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-  {editingTaskId === task.id ? (
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-     <input
-       type="text"
-       value={editedTaskText}
-       onChange={(e) => setEditedTaskText(e.target.value)}
-      />
-     <button
-       onClick={() => saveEditedTask(task.id)}
-       style={{
-         backgroundColor: '#4CAF50',
-         color: 'white',
-         padding: '10px',
-         marginLeft: '10px',
-         border: 'none',
-         borderRadius: '5px',
-         cursor: 'pointer',
-       }}
-      >
-       Salvar
-     </button>
-   </div>
-      ) : (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <span
-        style={{
-          textDecoration: task.completed ? 'line-through' : 'none',
-          color: task.completed ? '#FF6347' : '#000',
-          cursor: 'pointer',
-          flexGrow: 1,
-        }}
-        onClick={() => toggleTaskCompletion(task.id)}
-       >
-        {task.text}
-      </span>
-      <small style={{ marginLeft: '10px', color: '#888' }}>
-        {task.date}
-      </small>
-      {task.completed && task.completionDate && (
-        <small style={{ marginLeft: '10px', color: '#28a745' }}>
-          (Concluída em: {task.completionDate})
-        </small>
-       )}
-    </div>
-        )}
-
-    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-      <button onClick={() => removeTask(task.id)}>Remover</button>
-      {!task.completed && editingTaskId !== task.id && (
-        <button onClick={() => startEditingTask(task.id, task.text)}>Editar</button>
-       )}
-     </div>
-    {/* Checkboxes para tipos de tarefa */}
-    <div className='checkbox' style={{ marginLeft: '10px' }}>
-      <label>
-        <input className='checkbox-group'
-          type="checkbox"
-          checked={task.types.responsabilidade}
-          onChange={() => setTasks(tasks.map(t =>
-            t.id === task.id ? { ...t, types: { ...t.types, responsabilidade: !t.types.responsabilidade } } : t
-          ))}
-        />
-        Responsabilidade
-      </label>
-      <label>
-        <input className='checkbox-group'
-          type="checkbox" 
-          checked={task.types.lazer}
-          onChange={() => setTasks(tasks.map(t =>
-            t.id === task.id ? { ...t, types: { ...t.types, lazer: !t.types.lazer } } : t
-          ))}
-        />
-        Lazer ou Descanso
-      </label>
-      <label>
-        <input className='checkbox-group'
-          type="checkbox"
-          checked={task.types.criacao}
-          onChange={() => setTasks(tasks.map(t =>
-            t.id === task.id ? { ...t, types: { ...t.types, criacao: !t.types.criacao } } : t
-          ))}
-        />
-        Criação/Produção
-      </label>
-      </div> 
-  </li>
-  ))}
-  </ul>
-
   <div className='historico-div'>
   <h3>Histórico Diário</h3>
   <ul>
@@ -429,9 +455,8 @@ const calculateTypePercentages = () => {
       history.map((entry, index) => (
         <li className='historico' key={index}>
           Data: {entry.date}, 
-          Tarefas Concluídas: {entry.completedTasks === 0 ? 'Nenhuma tarefa' : `${entry.completedTasks}`}, 
           Total de Tarefas: {entry.totalTasks === 0 ? 'Nenhuma tarefa' : entry.totalTasks}, 
-          Porcentagem: {entry.totalTasks === 0 ? 'Nenhuma tarefa' : `${entry.completionPercentage.toFixed(2)}%`}
+          Tarefas Concluídas: {entry.completedTasks === 0 ? 'Nenhuma tarefa (0%)' : `${entry.completedTasks} (${entry.completionPercentage.toFixed(2)}%)`} 
           {Object.keys(entry.typePercentages || {}).map(type => {
             const label = typeLabels[type] || type;
             const color = type === 'lazer' ? 'orange' : type === 'responsabilidade' ? 'blue' : 'purple';
@@ -440,7 +465,7 @@ const calculateTypePercentages = () => {
 
             return (
               <p key={type} style={{ color }}>
-                {label}: {count === 0 ? 'Nenhuma tarefa' : `${count} ${count === 1 ? 'concluída' : 'concluídas'} - ${percentage.toFixed(2)}%`}
+                {label}: {count === 0 ? 'Nenhuma tarefa (0%)' : `${count} ${count === 1 ? 'concluída' : 'concluídas'} - ${percentage.toFixed(2)}%`}
               </p>
             );
           })}
