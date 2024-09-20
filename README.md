@@ -1,46 +1,29 @@
-# Getting Started with Create React App
+# To-do List
+
+Permite adicionar tarefas a uma lista de tarefas, especificar qual a categoria dessa tarefa entre três (responsabilidade, lazer e criação).
+É possível acompanhar durante o dia o progresso de suas tarefas, quantas foram concluídas ou não e a porcentagem dos dados, você pode salvar o progresso diário no histórico para poder acompanhar o andamento de suas tarefas no ao decorrer dos dias.
+
+
+# Como fazer
+
+Para adicionar uma tarefa, digite o nome dela no campo de texto "Adicionar Nova Tarefa", depois clique no botão "Adicionar", você pode resetar toda lista clicando no botão "Resetar Lista".
+Após adicionar uma tarefa, você tem três opções:
+ 1º - Editar o título dela clicando no botão "Editar" e após a edição clique em "Salvar" 
+ 2º - Remover a tarefa clicando no botão "Remover" 
+ 3º - Concluir a tarefa clicando no nome dela, antes de concluir lembre-se de marcar no checkbox a categoria da tarefa, para entrar nas estatísticas suas opções são: "Responsabilidade", "Lazer" e "Criação" mais que       uma alternativa pode ser marcada.
+
+
+Depois de concluir sua rotina ou no fim do dia, você pode optar por resetar a lista ou salvar seu progresso diário e adicionar ao seu histórico, clicando no botão "Salvar progresso diário" embaixo da lista de tarefas.
+Com a lista salva em seu histórico você tem as estatísticas e porcentagens da lista salva e pode comparar com a lista de outros dias e checar seu andamento, essa aplicação visa melhorar a organizaçao e produção do usuário deixando o ciente de sua perfomance durante o dia.
+
+
+
+
+
+
+# Feito por André Moreno
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+ 
