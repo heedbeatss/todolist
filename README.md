@@ -10,7 +10,7 @@ Para adicionar uma tarefa, digite o nome dela no campo de texto "Adicionar Nova 
 Após adicionar uma tarefa, você tem três opções:
  1º - Editar o título dela clicando no botão "Editar" e após a edição clique em "Salvar" 
  2º - Remover a tarefa clicando no botão "Remover" 
- 3º - Concluir a tarefa clicando no nome dela, antes de concluir lembre-se de marcar no checkbox a categoria da tarefa, para entrar nas estatísticas suas opções são: "Responsabilidade", "Lazer" e "Criação" mais que       uma alternativa pode ser marcada.
+ 3º - Concluir a tarefa clicando no botão "Concluir Tarefa", o botão será exibido depois do usuário marcar no checkbox a categoria da tarefa, para entrar nas estatísticas suas opções são: "Responsabilidade", "Lazer" e "Criação", mais que uma alternativa pode ser marcada.
 
 
 Depois de concluir sua rotina ou no fim do dia, você pode optar por resetar a lista ou salvar seu progresso diário e adicionar ao seu histórico, clicando no botão "Salvar progresso diário" embaixo da lista de tarefas.
