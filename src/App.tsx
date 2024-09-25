@@ -76,6 +76,7 @@ const App: React.FC = () => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
   
+  
 
   // Adiciona uma nova tarefa
   const addTask = () => {

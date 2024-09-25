@@ -4,7 +4,8 @@
     background-color: black;
     color: #333;
     margin: 0;
-    padding: 100px;
+    padding: 0px;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,6 +55,17 @@
     box-sizing: border-box; /* Ajuste para o padding não afetar a largura */
   }
 
+    /* Caixa de tarefa, entrada e botões */
+  input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
   button {
     padding: 10px 15px;
     background-color: #28a745;
@@ -70,6 +82,10 @@
 
   button:hover {
     background-color: #218838;
+  }
+
+  button:focus {
+    outline: none;
   }
 
   .estatisticas-porcentagem p {
@@ -100,6 +116,11 @@ li {
   font-size: x-small;
   max-width: 100vw; /* Definir a altura máxima da lista */
   overflow-x: auto; /* Habilitar a rolagem vertical */ 
+}
+
+.checkbox-group {
+  display: inline-block;
+  margin: 10px;
 }
 
 li:last-child {
@@ -206,3 +227,44 @@ li div {
   flex-direction: row;
 }
 
+/* Responsividade: Ajustes para tablets e dispositivos móveis */
+@media screen and (max-width: 768px) {
+  /* Ajustes para tablets */
+  input[type="text"] {
+    max-width: 100%;
+  }
+
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkbox-group {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Ajustes para dispositivos móveis */
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+
+  button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+  }
+
+  .checkbox-group {
+    margin-left: 0;
+  }
+}
